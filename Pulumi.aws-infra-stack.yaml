@@ -1,0 +1,7 @@
+encryptionsalt: v1:fPSSu9IQ5fU=:v1:fMmBIs2tP3qYd+JB:ikXutMfEkJZECv/L+lCUl/7Ig8QcBA==
+config:
+  a:ami: ami-0ce71448843cb18a1
+  aws:accessKey: AKIAXG24HINT4OGZJLUH
+  aws:region: eu-west-1
+  aws:secretKey:
+    secure: v1:4qTQrOMRVsAq9O6z:7nQwA7tJuFusny3fJ73NMwWj8h8nsiE5+o/d/O4axnNIgDfDCLWGypozXtqYH63lwnRbYYUuzSc=
