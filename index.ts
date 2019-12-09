@@ -3,7 +3,7 @@ import * as aws from "@pulumi/aws";
 import { Output } from "@pulumi/pulumi";
 
 import * as __size from './_size';
-const _config = require('../config/aws_nodes.json');
+const __ = require('../config/aws_nodes.json');
 const stackConfig = new pulumi.Config();
 let ipAddressesList: Output<string>[] = [];
 let dnsList: Output<string>[] = [];
@@ -28,19 +28,19 @@ let securityGroup = new aws.ec2.SecurityGroup("web-secgrp", {
 });
 const nodeKey = new aws.ec2.KeyPair('key', {
     keyName: 'node',
-    publicKey: _config.publicKey
+    publicKey: __.params.public_key
 });
 let userData =
     `#!/bin/bash
         echo "Hello, World it Me!" > index.html
         nohup python -m SimpleHTTPServer 80 &` || stackConfig.get('script');
 //Begin LOOP
-for (let index = 1; index <= _config.vmNumber; index++) {
+for (let index = 1; index <= __.params.vm_number; index++) {
     let server = new aws.ec2.Instance(`node-${index}`, {
         instanceType: __size.getSize(),
         securityGroups: [securityGroup.name],
-        ami: _config.ami,
-        userData: _config.userData,
+        ami: __.params.ami,
+        userData: __.params.script,
         keyName: nodeKey.keyName
     });
     ipAddressesList.push(server.publicIp);
