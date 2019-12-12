@@ -35,7 +35,7 @@ let userData =
         echo "Hello, World it Me!" > index.html
         nohup python -m SimpleHTTPServer 80 &` || stackConfig.get('script');
 //Begin LOOP
-for (let index = 1; index <= __.params.vm_number; index++) {
+for (let index = 1; index <= __.params.node_number; index++) {
     let server = new aws.ec2.Instance(`${__.params.tag}--node--${index}`, {
         instanceType: __size.getSize(),
         securityGroups: [securityGroup.name],
