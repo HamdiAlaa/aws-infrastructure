@@ -1,6 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
-import * as awsx from "@pulumi/awsx"
 import { Output } from "@pulumi/pulumi";
 
 import * as __size from './_size';
@@ -32,10 +31,10 @@ let securityGroup = new aws.ec2.SecurityGroup(`${__.require('type')}--scrtgrp`, 
     
 });
 
-const nodeKey = new aws.ec2.KeyPair(`${__.require('type')}--keyPair`, {
-    keyName: `${__.require('type')}-key-name`,
-    publicKey: public_key,
-});
+// const nodeKey = new aws.ec2.KeyPair(`${__.require('type')}--keyPair`, {
+//     keyName: `${__.require('type')}-key-name`,
+//     publicKey: public_key,
+// });
 
 
 let userData =
@@ -56,7 +55,8 @@ for (let index = 1; index <= +__.require('node_number'); index++) {
         securityGroups: [securityGroup.name],
         ami: ami,
         userData: userData,
-        keyName: nodeKey.keyName,
+        // keyName: nodeKey.keyName,
+        keyName:__.require('key_pair')
     });
     
     ipAddressesList.push(server.publicIp);
