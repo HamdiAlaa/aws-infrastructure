@@ -7,7 +7,6 @@ const __ = new pulumi.Config();
 let ipAddressesList: Output<string>[] = [];
 let privateIpAddressesList: Output<string>[] = [];
 let dnsList: Output<string>[] = [];
-let public_key:string = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCPr8URNZnLcR+sSVxcUg3ir0X7V+4EuqF4hkCsVJZ2z8HQXtVSPkANkVW28uwPPrt2o83Pouq2GdCsDu7X7xaVgSw7i2Cwi4x4ZiMNpMGTRuvGgbXt0gI7reolfaOWh51wJcjOXdTlH1cXCq4gEZoSecfh3XY6K7ND/YcRpLKsEtKHQoxHrAa80abd/VskRV+WicfJgbHyZ+qdRdyb73Tvh52cHDLo1iYIV/l+YEc70EGpn0LG4v1vIPUSWmYYp75jZNnHHntZjbDcQ/pT5M1Ov6Lwr6xF9vS54uKPCyNQRJcTzbvgVPu/j3lsKAJQscy6ccA+uPrDKDZ0V/zdUjSB"
 // Get the id for the latest Amazon Linux AMI
 let ami = pulumi.output(aws.getAmi({
     filters: [
@@ -18,7 +17,7 @@ let ami = pulumi.output(aws.getAmi({
 })).apply(result => result.id);
 
 // create a new security group for port 80
-let securityGroup = new aws.ec2.SecurityGroup(`${__.require('type')}--scrtgrp`, {
+let securityGroup = new aws.ec2.SecurityGroup(`${__.require('cluster_name')}--scrtgrp`, {
     ingress: [
         { protocol: "tcp", fromPort: 22, toPort: 22, cidrBlocks: ["0.0.0.0/0"] },
         { protocol: "tcp", fromPort: 80, toPort: 80, cidrBlocks: ["0.0.0.0/0"] },
@@ -30,12 +29,6 @@ let securityGroup = new aws.ec2.SecurityGroup(`${__.require('type')}--scrtgrp`, 
     revokeRulesOnDelete:true,
     
 });
-
-// const nodeKey = new aws.ec2.KeyPair(`${__.require('type')}--keyPair`, {
-//     keyName: `${__.require('type')}-key-name`,
-//     publicKey: public_key,
-// });
-
 
 let userData =
 `#!/bin/bash
@@ -50,7 +43,7 @@ echo "Hello, World!" > index.html
 sudo usermod -aG docker ubuntu &`;
 //Begin LOOP
 for (let index = 1; index <= +__.require('node_number'); index++) {
-    let server = new aws.ec2.Instance(`${__.require('type')}--node--${index}`, {
+    let server = new aws.ec2.Instance(`${__.require('cluster_name')}--node--${index}`, {
         instanceType: __size.getSize(),
         securityGroups: [securityGroup.name],
         ami: ami,
